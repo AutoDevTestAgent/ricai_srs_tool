@@ -4,7 +4,7 @@ from superagi.tools.base_tool import BaseTool
 from ricai_srs_helper import RicaiSRSHelper
 
 class RicaiSRSReadFeatureSchema(BaseModel):
-    # TODO: determine params to pass
+    file_dir: str = Field(..., description="The SRS document directory")
     feature: str = Field(..., description="The feature to retrieve requirements for")
     pass
 
@@ -26,11 +26,12 @@ class RicaiSRSReadFeatureTool(BaseTool):
     class Config:
         arbitrary_types_allowed = True
     
-    def _execute(self, feature: str):
+    def _execute(self, file_dir: str, feature: str):
         """
         Execute the RicAI Read requirements for specific feature(s) tool.
 
         Args:
+            file_dir: The SRS document directory
             feature: The feature to retrieve requirements for
 
         Returns:
@@ -44,7 +45,8 @@ class RicaiSRSReadFeatureTool(BaseTool):
             ricai_srs_helper = RicaiSRSHelper(
                 weaviate_url=weaviate_url,
                 weaviate_key=weaviate_key,
-                openai_key=openai_key
+                openai_key=openai_key,
+                file_dir=file_dir
             )                        
             result = ricai_srs_helper.retrieve_specific_feature_requirements(feature)
             return result

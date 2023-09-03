@@ -4,7 +4,7 @@ from superagi.tools.base_tool import BaseTool
 from ricai_srs_helper import RicaiSRSHelper
 
 class RicaiSRSMatchCodeSchema(BaseModel):
-    # TODO: determine params to pass
+    file_dir: str = Field(..., description="The SRS document directory")
     code: str = Field(..., description="The code to retrieve requirements for")
     pass
 
@@ -26,11 +26,12 @@ class RicaiSRSMatchCodeTool(BaseTool):
     class Config:
         arbitrary_types_allowed = True
     
-    def _execute(self, code: str):
+    def _execute(self, file_dir: str, code: str):
         """
         Execute the RicAI Read requirements for specific code tool.
 
         Args:
+            file_dir: The SRS document directory
             code: The code to retrieve requirements for
 
         Returns:
@@ -44,7 +45,8 @@ class RicaiSRSMatchCodeTool(BaseTool):
             ricai_srs_helper = RicaiSRSHelper(
                 weaviate_url=weaviate_url,
                 weaviate_key=weaviate_key,
-                openai_key=openai_key
+                openai_key=openai_key,
+                file_dir=file_dir
             )                        
             result = ricai_srs_helper.match_code_with_requirements(code)
             return result
